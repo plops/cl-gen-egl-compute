@@ -73,7 +73,7 @@ is replaced with replacement."
 		  (include <cassert>)
 		 
 					;(include <errno.h>)
-					;(include <cstring>)
+		  (include <cstring>)
 		  ;(include <sys/mman.h>)
 		  (include <unistd.h>)
 
@@ -110,7 +110,7 @@ is replaced with replacement."
 						   (let ((has_dumb :type uint64_t :init 0))
 						     (funcall bla)
 						     (raw "has_dumb"))))
-			    (let ((fd :type int32_t
+			    (let ((fd ;:type int32_t
 				      :init (paren-list
 					     (let ((fd_ :init (funcall open (string "/dev/dri/renderD128") O_RDWR)))
 					       (funcall assert (< 0 fd_))
@@ -118,7 +118,72 @@ is replaced with replacement."
 				  (gbm :init (paren-list
 					      (let ((g_ :init (funcall gbm_create_device fd)))
 						(funcall assert (!= nullptr g_))
-						(raw g_)))))
+						(raw g_))))
+				  (egl_dpy :init (paren-list
+						  (let ((d_ :init (funcall eglGetPlatformDisplay
+									   EGL_PLATFORM_GBM_MESA
+									   gbm
+									   nullptr)))
+						    (funcall assert (!= nullptr d_))
+						    (raw "d_"))))
+				  (egl_runs_p :type bool
+					      :init (paren-list
+						     (let ((res :init (funcall eglInitialize egl_dpy
+									       nullptr nullptr)))
+						       (funcall assert res)
+						       (raw "1"))))
+				  (surface_less_supported_p
+				   :type bool
+				   :init (paren-list
+					  (let ((egl_extension :init (funcall eglQueryString egl_dpy
+									      EGL_EXTENSIONS)))
+					    (funcall assert (!= nullptr
+								(funcall strstr
+									 egl_extension
+									 (string "EGL_KHR_create_context"))))
+					    (funcall assert (!= nullptr
+								(funcall strstr
+									 egl_extension
+									 (string "EGL_KHR_surfaceless_context"))))
+					    (raw "1"))))
+				  (cfg :init
+				    (paren-list
+				     (let (((aref config_attribs) :type "static const EGLint"
+					    :init (list EGL_RENDERABLE_TYPE
+							EGL_OPENGL_ES3_BIT_KHR
+							EGL_NONE))
+					   (cfg_ :type EGLConfig)
+					   (count :type EGLint)
+					   (res :init (funcall eglChooseConfig  egl_dpy
+							       config_attribs
+							       &cfg_
+							       1
+							       &count)))
+				       (funcall assert res)
+				       (raw cfg_))))
+
+				  (egl_api_bound :init
+				    (paren-list
+				     (let ((res :init (funcall eglBindAPI EGL_OPENGL_ES_API)))
+				       (funcall assert res)
+				       (raw res))))
+				  (core_ctx :init
+				    (paren-list
+				     (let (((aref attribs) :type "static const EGLint"
+					    :init (list EGL_CONTEXT_CLIENT_VERSION 3
+								       EGL_NONE))
+					   (ctx :init (funcall eglCreateContext egl_dpy
+							       cfg EGL_NO_CONTEXT
+							       attribs))
+					   )
+				       (funcall assert (!= EGL_NO_CONTEXT ctx))
+				       (raw "ctx"))))
+				  (ctx_current :init
+				    (paren-list
+				     (let ((res :init (funcall eglMakeCurrent egl_dpy EGL_NO_SURFACE
+							 EGL_NO_SURFACE core_ctx)))
+				       (funcall assert res)
+				       (raw res)))))
 			      )
 			    (return 0)))))
     (write-source "stage/cl-gen-egl-compute/source/main" "cpp" code)))

@@ -1,1 +1,1 @@
-g++ --std=c++14 -march=native -O2 -Wall -Wextra main.cpp  -lgbm  
+g++ --std=c++14 -march=native -O2 -Wall -Wextra main.cpp  -lgbm   -I/usr/include/libdrm -lEGL  
