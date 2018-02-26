@@ -123,10 +123,6 @@ is replaced with replacement."
 		  		  
 		  (function (main ((argc :type int)
 				   (argv :type char**)) int)
-			    #+Nil (has_dumb :init (paren-list
-						   (let ((has_dumb :type uint64_t :init 0))
-						     (funcall bla)
-						     (raw "has_dumb"))))
 			    (let ((fd ;:type int32_t
 				      :init (paren-list
 					     (let ((fd_ :init (funcall open (string "/dev/dri/renderD128") O_RDWR)))
