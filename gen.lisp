@@ -57,8 +57,23 @@ is replaced with replacement."
   `(let ((,f :type "std::ofstream" :ctor (comma-list (string ,(format nil "~a/~a" dir fn)))))
      ,@body))
 
+
+
 (progn
-  (let* ((code `(with-compilation-unit
+  (let* ((shader-code (let ((code `(with-compilation-unit
+				       (raw "#version 310 es")
+				     (raw "layout (local_size_x=1,local_size_y=1,local_size_z=1) in")
+				     (function (main ((void)))
+					       (raw "// code here")
+					       (raw "")))))
+			(replace-all (emit-cpp
+				      :clear-env t
+				      :code code)
+				     "
+"
+				     "\\
+")))
+	 (code `(with-compilation-unit
 		    (with-compilation-unit
 			(raw "//! \\file main.cpp Draw to screen using linux direct rendering manager"))
 
@@ -96,6 +111,8 @@ is replaced with replacement."
 		  ,@(loop for i from 1 and e in '("gpu-playground/render-nodes-minimal/main.c")
 		       collect
 			 `(raw ,(format nil "//! ~a. ~a" i e)))
+		  
+		  (raw ,(format nil "#define COMPUTE_SHADER_SRC \"~a\"" shader-code))
 		  
 		  
 		  ,@(dox :brief "main function"
@@ -183,8 +200,39 @@ is replaced with replacement."
 				     (let ((res :init (funcall eglMakeCurrent egl_dpy EGL_NO_SURFACE
 							 EGL_NO_SURFACE core_ctx)))
 				       (funcall assert res)
-				       (raw res)))))
-			      )
+				       (raw res))))
+				  (compute_shader :init
+				    (paren-list
+				     (let ((res :init (funcall glCreateShader GL_COMPUTE_SHADER)))
+				       (funcall assert (== GL_NO_ERROR (funcall glGetError)))
+				       (raw res))))
+				  (shader_program :init
+				    (paren-list
+				     (let ((shader_source :type "const char*" :init COMPUTE_SHADER_SRC)
+					   )
+				       (funcall glShaderSource compute_shader 1 &shader_source nullptr)
+				       (funcall assert (== GL_NO_ERROR (funcall glGetError)))
+				       (funcall glCompileShader compute_shader)
+				       (funcall assert (== GL_NO_ERROR (funcall glGetError)))
+				       (funcall glCreateProgram))))
+				  (attached_linked :init
+				    (paren-list
+				     (funcall glAttachShader shader_program compute_shader)
+				     (funcall assert (== GL_NO_ERROR (funcall glGetError)))
+				     (funcall glLinkProgram shader_program)
+				     (funcall assert (== GL_NO_ERROR (funcall glGetError)))
+				     1))
+				  (used :init
+				    (paren-list
+				     (funcall glDeleteShader compute_shader)
+				     (funcall glUseProgram shader_program)
+				     (funcall assert (== GL_NO_ERROR (funcall glGetError)))
+				     1))
+				  (dispatched :init
+				    (paren-list
+				     (funcall glDispatchCompute 1 1 1)
+				     (funcall assert (== GL_NO_ERROR (funcall glGetError)))
+				     1))))
 			    (return 0)))))
     (write-source "stage/cl-gen-egl-compute/source/main" "cpp" code)))
 

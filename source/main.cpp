@@ -22,6 +22,12 @@
 
 //! \section References
 //! 1. gpu-playground/render-nodes-minimal/main.c
+#define COMPUTE_SHADER_SRC                                                     \
+  "#version 310 es\
+layout (local_size_x=1,local_size_y=1,local_size_z=1) in\
+main(nil void){\
+  // code here;\
+  ;}"
 
 //! @brief main function
 //!
@@ -91,6 +97,22 @@ int main(int argc, char **argv) {
       assert((GL_NO_ERROR == glGetError()));
       res;
     });
+    auto shader_program = ({
+      const char *shader_source = COMPUTE_SHADER_SRC;
+      glShaderSource(compute_shader, 1, &shader_source, nullptr);
+      assert((GL_NO_ERROR == glGetError()));
+      glCompileShader(compute_shader);
+      assert((GL_NO_ERROR == glGetError()));
+      glCreateProgram();
+    });
+    auto attached_linked =
+        (glAttachShader(shader_program, compute_shader),
+         assert((GL_NO_ERROR == glGetError())), glLinkProgram(shader_program),
+         assert((GL_NO_ERROR == glGetError())), 1);
+    auto used = (glDeleteShader(compute_shader), glUseProgram(shader_program),
+                 assert((GL_NO_ERROR == glGetError())), 1);
+    auto dispatched =
+        (glDispatchCompute(1, 1, 1), assert((GL_NO_ERROR == glGetError())), 1);
   }
   return 0;
 }
