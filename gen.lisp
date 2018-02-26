@@ -232,7 +232,14 @@ is replaced with replacement."
 				    (paren-list
 				     (funcall glDispatchCompute 1 1 1)
 				     (funcall assert (== GL_NO_ERROR (funcall glGetError)))
-				     1))))
+				     1))
+				  (cleaned_up :init
+				    (paren-list
+				     (funcall glDeleteProgram shader_program)
+				     (funcall eglDestroyContext egl_dpy core_ctx)
+				     (funcall eglTerminate egl_dpy)
+				     (funcall gbm_device_destroy gbm)
+				     (funcall close fd)))))
 			    (return 0)))))
     (write-source "stage/cl-gen-egl-compute/source/main" "cpp" code)))
 

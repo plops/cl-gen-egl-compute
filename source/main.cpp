@@ -113,6 +113,9 @@ int main(int argc, char **argv) {
                  assert((GL_NO_ERROR == glGetError())), 1);
     auto dispatched =
         (glDispatchCompute(1, 1, 1), assert((GL_NO_ERROR == glGetError())), 1);
+    auto cleaned_up =
+        (glDeleteProgram(shader_program), eglDestroyContext(egl_dpy, core_ctx),
+         eglTerminate(egl_dpy), gbm_device_destroy(gbm), close(fd));
   }
   return 0;
 }
