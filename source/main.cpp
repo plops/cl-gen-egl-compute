@@ -1,7 +1,7 @@
 //! \file main.cpp Draw to screen using linux direct rendering manager
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
-#include <GLES3/gl31.h>
+#include <GLES3/gl32.h>
 #include <cassert>
 #include <cstring>
 #include <fcntl.h>
@@ -23,11 +23,11 @@
 //! \section References
 //! 1. gpu-playground/render-nodes-minimal/main.c
 #define COMPUTE_SHADER_SRC                                                     \
-  "#version 310 es\
-layout (local_size_x=1,local_size_y=1,local_size_z=1) in\
-main(nil void){\
-  // code here;\
-  ;}"
+  "#version 320 es\
+\
+layout (local_size_x=1,local_size_y=1,local_size_z=1) in;\
+\
+void main(void){}"
 
 //! @brief main function
 //!

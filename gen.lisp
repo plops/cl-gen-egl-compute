@@ -61,9 +61,13 @@ is replaced with replacement."
 
 (progn
   (let* ((shader-code (let ((code `(with-compilation-unit
-				       (raw "#version 310 es")
-				     (raw "layout (local_size_x=1,local_size_y=1,local_size_z=1) in")
-				     (function (main ((void)))
+				       (raw "#version 320 es")
+				     (raw "")
+				     (raw "layout (local_size_x=1,local_size_y=1,local_size_z=1) in;")
+				     (raw "")
+				     (raw "void main(void){}")
+				     #+nil
+				     (function (main () void)
 					       (raw "// code here")
 					       (raw "")))))
 			(replace-all (emit-cpp
@@ -79,7 +83,7 @@ is replaced with replacement."
 
 		  (include <EGL/egl.h>)
 		  (include <EGL/eglext.h>)
-		  (include <GLES3/gl31.h>)
+		  (include <GLES3/gl32.h>)
 		  (include <gbm.h>)
 		  (include <fcntl.h>)
 		  (include <stdbool.h>)
@@ -225,7 +229,6 @@ is replaced with replacement."
 				     (funcall glUseProgram shader_program)
 				     (funcall assert (== GL_NO_ERROR (funcall glGetError)))
 				     1))
-
 				  (dispatched :init
 				    (paren-list
 				     (funcall glDispatchCompute 1 1 1)

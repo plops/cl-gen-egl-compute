@@ -1,1 +1,5 @@
-g++ --std=c++14 -march=native -O2 -Wall -Wextra main.cpp  `pkg-config gbm egl gl --cflags --libs`
+CXXFLAGS="-frounding-math -fext-numeric-literals -fpermissive -march=native -mtune=native -O0 -std=c++17 -Wall -Wdouble-promotion  -Wformat -Wformat=2  -Wlogical-op  -Wold-style-cast  -Wshadow -Wuseless-cast  "
+# -Wduplicated-cond  -Wduplicated-branches -Wnull-dereference -Wrestrict -Wjump-misses-init
+g++ -ggdb --std=c++17 -march=native -O0 $CXXFLAGS main.cpp  `pkg-config gbm egl glesv2 --cflags --libs`
+
+# export MESA_GLSL=dump,useprogs
