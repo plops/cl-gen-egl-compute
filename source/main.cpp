@@ -114,9 +114,7 @@ int main(int argc, char **argv) {
          glUseProgram(shader_program),
          {
            auto e = glGetError();
-           if ((GL_NO_ERROR != e)) {
-             (std::cerr << "error: " << e << std::endl);
-           }
+           (std::cerr << "error: " << e << std::endl);
          },
          1);
     auto dispatched =
