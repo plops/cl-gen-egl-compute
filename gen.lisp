@@ -65,12 +65,12 @@ is replaced with replacement."
 				     
 				     (raw "layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;")
 				     
-				     (raw ,(format nil "void main(void){~%}")
+				     #+nil (raw ,(format nil "void main(){;}")
 					  )
-				     #+nil
+				     
 				     (function (main () void)
-					       (raw "// code here")
-					       (raw "")))))
+						     (raw "/* code here */")
+						     (raw "")))))
 			(replace-all (emit-cpp
 				      :clear-env t
 				      :code code)
