@@ -115,6 +115,7 @@ int main(int argc, char **argv) {
          {
            auto e = glGetError();
            (std::cerr << "error: " << e << std::endl);
+           assert((GL_NO_ERROR == e));
          },
          1);
     auto dispatched =

@@ -225,6 +225,7 @@ is replaced with replacement."
 				     (funcall glUseProgram shader_program)
 				     (let ((e :init (funcall glGetError)))
 				       (macroexpand (er "error: " e))
+				       (funcall assert (== GL_NO_ERROR e))
 				       #+nil (if (!= GL_NO_ERROR e)
 					   (macroexpand (er "error: " e))))
 				     ;(funcall assert (== GL_NO_ERROR (funcall glGetError)))
