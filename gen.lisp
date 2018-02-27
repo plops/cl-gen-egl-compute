@@ -223,9 +223,9 @@ is replaced with replacement."
 				     (funcall glDeleteShader compute_shader)
 				     (funcall assert (== GL_NO_ERROR (funcall glGetError)))
 				     (funcall glUseProgram shader_program)
-				     (macroexpand (er "error: " (funcall glGetError)))
 				     (funcall assert (== GL_NO_ERROR (funcall glGetError)))
 				     1))
+
 				  (dispatched :init
 				    (paren-list
 				     (funcall glDispatchCompute 1 1 1)
