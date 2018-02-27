@@ -2,4 +2,6 @@ CXXFLAGS="-frounding-math -fext-numeric-literals -fpermissive -march=native -mtu
 # -Wduplicated-cond  -Wduplicated-branches -Wnull-dereference -Wrestrict -Wjump-misses-init
 g++ -ggdb --std=c++17 -march=native -O0 $CXXFLAGS main.cpp  `pkg-config gbm egl glesv2 --cflags --libs`
 
-# export MESA_GLSL=dump,useprogs
+# to debug shader use
+# export MESA_GLSL=log
+# and cat shader1.comp

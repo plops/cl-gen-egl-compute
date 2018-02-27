@@ -1,5 +1,5 @@
 /* Shader 1 source */
-#version 310 eslayout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;void main(void){}
-/* Compile status: fail */
+#version 310 es
+layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;void main(void){}
+/* Compile status: ok */
 /* Log Info: */
-0:1(23): preprocessor error: syntax error, unexpected '(', expecting NEWLINE

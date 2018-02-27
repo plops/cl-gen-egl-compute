@@ -61,11 +61,12 @@ is replaced with replacement."
 
 (progn
   (let* ((shader-code (let ((code `(with-compilation-unit
-				       (raw "#version 320 es")
-				     (raw "")
-				     (raw "layout (local_size_x=1,local_size_y=1,local_size_z=1) in;")
-				     (raw "")
-				     (raw "void main(void){}")
+				     (raw "#version 310 es\\n")
+				     
+				     (raw "layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;")
+				     
+				     (raw ,(format nil "void main(void){~%}")
+					  )
 				     #+nil
 				     (function (main () void)
 					       (raw "// code here")
@@ -83,7 +84,7 @@ is replaced with replacement."
 
 		  (include <EGL/egl.h>)
 		  (include <EGL/eglext.h>)
-		  (include <GLES3/gl32.h>)
+		  (include <GLES3/gl31.h>)
 		  (include <gbm.h>)
 		  (include <fcntl.h>)
 		  (include <stdbool.h>)
