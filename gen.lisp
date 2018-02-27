@@ -221,8 +221,12 @@ is replaced with replacement."
 				  (used :init
 				    (paren-list
 				     (funcall glDeleteShader compute_shader)
-				     (funcall glUseProgram shader_program)
 				     (funcall assert (== GL_NO_ERROR (funcall glGetError)))
+				     (funcall glUseProgram shader_program)
+				     (let ((e :init (funcall glGetError)))
+				       (if (!= GL_NO_ERROR e)
+					   (macroexpand (er "error: " e))))
+				     ;(funcall assert (== GL_NO_ERROR (funcall glGetError)))
 				     1))
 				  (dispatched :init
 				    (paren-list
