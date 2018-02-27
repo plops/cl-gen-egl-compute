@@ -13,7 +13,7 @@
                                             (t e))) "std::endl")))
 
 (defmacro er (&body body)
-  `(statements (<< "std::cerr" ,@(loop for e in body collect
+  `(with-compilation-unit (<< "std::cerr" ,@(loop for e in body collect
                                       (cond ((stringp e) `(string ,e))
                                             (t e))) "std::endl")))
 
@@ -223,12 +223,8 @@ is replaced with replacement."
 				     (funcall glDeleteShader compute_shader)
 				     (funcall assert (== GL_NO_ERROR (funcall glGetError)))
 				     (funcall glUseProgram shader_program)
-				     (let ((e :init (funcall glGetError)))
-				       (macroexpand (er "error: " e))
-				       (funcall assert (== GL_NO_ERROR e))
-				       #+nil (if (!= GL_NO_ERROR e)
-					   (macroexpand (er "error: " e))))
-				     ;(funcall assert (== GL_NO_ERROR (funcall glGetError)))
+				     (macroexpand (er "error: " (funcall glGetError)))
+				     (funcall assert (== GL_NO_ERROR (funcall glGetError)))
 				     1))
 				  (dispatched :init
 				    (paren-list

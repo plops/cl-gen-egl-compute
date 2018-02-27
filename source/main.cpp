@@ -112,12 +112,8 @@ int main(int argc, char **argv) {
     auto used =
         (glDeleteShader(compute_shader), assert((GL_NO_ERROR == glGetError())),
          glUseProgram(shader_program),
-         {
-           auto e = glGetError();
-           (std::cerr << "error: " << e << std::endl);
-           assert((GL_NO_ERROR == e));
-         },
-         1);
+         (std::cerr << "error: " << glGetError() << std::endl),
+         assert((GL_NO_ERROR == glGetError())), 1);
     auto dispatched =
         (glDispatchCompute(1, 1, 1), assert((GL_NO_ERROR == glGetError())), 1);
     auto cleaned_up =
