@@ -113,7 +113,8 @@ is replaced with replacement."
 		  
 		  (raw " ")
 		  (raw "//! \\section References ")
-		  ,@(loop for i from 1 and e in '("gpu-playground/render-nodes-minimal/main.c")
+		  ,@(loop for i from 1 and e in '("gpu-playground/render-nodes-minimal/main.c"
+						  "https://www.khronos.org/opengl/wiki/GLSL_Optimizations")
 		       collect
 			 `(raw ,(format nil "//! ~a. ~a" i e)))
 		  
@@ -192,8 +193,7 @@ is replaced with replacement."
 								       EGL_NONE))
 					   (ctx :init (funcall eglCreateContext egl_dpy
 							       cfg EGL_NO_CONTEXT
-							       attribs))
-					   )
+							       attribs)))
 				       (funcall assert (!= EGL_NO_CONTEXT ctx))
 				       (raw "ctx"))))
 				  (ctx_current :init
@@ -223,6 +223,8 @@ is replaced with replacement."
 				     (funcall glLinkProgram shader_program)
 				     (funcall assert (== GL_NO_ERROR (funcall glGetError)))
 				     1))
+
+				  
 				  (used :init
 				    (paren-list
 				     (funcall glDeleteShader compute_shader)

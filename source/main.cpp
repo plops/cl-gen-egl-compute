@@ -22,6 +22,7 @@
 
 //! \section References
 //! 1. gpu-playground/render-nodes-minimal/main.c
+//! 2. https://www.khronos.org/opengl/wiki/GLSL_Optimizations
 #define COMPUTE_SHADER_SRC                                                     \
   "#version 310 es\n\
 layout (local_size_x = 1, local_size_y = 1, local_size_z = 1) in;\
